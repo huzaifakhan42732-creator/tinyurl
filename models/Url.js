@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Url schema: stores each shortened URL.
-// "user" is a reference to the registered User (optional for guest links).
+// "user" references registered User (null for guests)
 const UrlSchema = new mongoose.Schema(
   {
     originalUrl: {
@@ -17,14 +17,14 @@ const UrlSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false,
       default: null,
     },
   },
   { timestamps: true }
 );
 
-// Reuse the model if it already exists (prevents errors during Next.js hot reload)
-const Url = mongoose.models.Url || mongoose.model("Url", UrlSchema);
+// Ensure model reflects current schema in hot-reload
+delete mongoose.models.Url;
+const Url = mongoose.model("Url", UrlSchema);
 
 export default Url;

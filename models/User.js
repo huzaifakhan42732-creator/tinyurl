@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true } // adds createdAt and updatedAt automatically
 );
 
-// Reuse the model if it already exists (prevents errors during Next.js hot reload)
+// Reuse the model if it already exists (prevents errors during Next.js hot reloaddfg)
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

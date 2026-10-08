@@ -49,12 +49,16 @@ export async function POST(request) {
       shortCode = generateShortCode();
     }
 
-    // 4. Save the URL (linked to the user if logged in, otherwise guest null)
-    await Url.create({
+    // 4. Save the URL (linked to the user if logged in, otherwise null)
+    const newDoc = {
       originalUrl,
       shortCode,
-      user: userId || null,
-    });
+    };
+    if (userId) {
+      newDoc.user = userId;
+    }
+
+    await Url.create(newDoc);
 
     // 5. Build the full short URL using the current site's address
     const baseUrl = new URL(request.url).origin;
@@ -70,9 +74,12 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Create URL error:", error.message);
+    console.error("Create URL error:", error);
     return NextResponse.json(
-      { success: false, message: "Server error while creating short URL" },
+      {
+        success: false,
+        message: error.message || "Server error while creating short URL",
+      },
       { status: 500 }
     );
   }
